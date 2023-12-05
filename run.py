@@ -5,6 +5,9 @@ from google.oauth2.service_account import Credentials #to handle authentication
 #pip3 install pyfiglet
 import pyfiglet
 
+#pip3 install colored
+from colored import fg, bg, attr
+
 #Define list of scopes that defines the access levels app requires
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -21,8 +24,17 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 #Opening google sheet
 SHEET = GSPREAD_CLIENT.open('doctor_booking')
-ascii_banner = pyfiglet.figlet_format("Pulse Clinic")
-print(ascii_banner)
+
+#Colours
+RED = fg("red")
+BLUE = fg("light_blue")
+CYAN = fg("light_cyan")
+R = attr("reset")
+
+
+#Welcome screen banner
+ascii_banner = BLUE + pyfiglet.figlet_format('Pulse Clinic', justify="center") + R
+
 
 
 #def main_page():
