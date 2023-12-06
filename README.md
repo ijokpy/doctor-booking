@@ -141,8 +141,25 @@ The booking system is built as a milestone Project#3 for Code Institute Full Sta
 - In terminal run command `pip3 freeze > requirement.txt` to create a list of requirements to be installed in Heroku
 
 ### Deploy with Heroku
-- Navigate to [Heroku](https://dashboard.heroku.com/apps)
-- 
+- Sign up for [Heroku](https://dashboard.heroku.com/apps) account
+- From the Heroku dashboard, click `Create new app`
+- User a unique name for the project and chose a region. For this project `doctor-booking` has been selected as a name and Europe as a region. Click `Create App`
+- Once the app is created, select `Settings` tab and navigate to `Config Vars`
+- Click on `Reveal Config Vars`. 
+    - In a field for KEY, type `CREDS`
+    - Navigate to project CodeAnywhere workspace and copy contents of `creds.json`
+    - Paste copied value into VALUE field in Config Vars in Heroku and click `Add`
+- Under the same `Settings` tab, navigate to `Buildpacks`  
+    - Click `Add Buildpack`, select `Python` and select `Save changes`
+    - Click `Add Buildpack`, select `nodejs` and select `Save changes`
+- Navigate to `Deploy` section
+    - Navigate to `Deployment method` and select `GitHub` and click `Connect to GitHub`
+    - Search for a repository name. For this project the name is `doctor-booking`. Click `Search` and `Connect`
+- Navigate to Automatic deploys and select `Enable Automatic Deploys` 
+    - The deployment will begin
+    - The message will appear to confirm successful deployment
+    - Click `View` to open deployed application
+
 
 
 # Credits
