@@ -123,12 +123,7 @@ def menu_options():
 
 
 
- #def get_months():
-   # """
-   # Retrieve months that bookings can be made for.
-#
-   # """
-     #available_months =  SHEET.worksheet("Availability").get_all_values()    
+ 
 
 def main_page():
     """
