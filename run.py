@@ -37,6 +37,7 @@ SHEET = GSPREAD_CLIENT.open('doctor_booking')
 RED = fg("red")
 BLUE = fg("light_blue")
 CYAN = fg("light_cyan")
+MAGENTA = fg("magenta")
 R = attr("reset")
 
 
@@ -58,8 +59,22 @@ def get_consultants():
     df =pd.DataFrame(available_consultants[1:],columns=available_consultants[0])
     doctor_names = list(df.columns[1:])
     for i, doctor_name in enumerate(doctor_names, start=1):
-        print(f"{CYAN}{i}{R}  -  {doctor_name}")
-    return doctor_names
+        print(f"{CYAN}{i}{R}  -  {doctor_name}\n")
+    return df, doctor_names
+
+def get_months(df, selected_doctor):
+    """
+    Function retrieves available months 
+    """
+    df["Date"] = pd.to_datetime(df["Date"])
+    filtered_df = df[df[selected_doctor].apply(lambda x: x.strip() != "")]
+    unique_months = filtered_df["Date"].dt.month.unique()
+    month_code_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+    month_codes = [month_code_map[month] for month in unique_months]
+    
+    # Return the month codes
+    return month_codes
+
 
 def book_appointment():
     """
@@ -73,13 +88,21 @@ def book_appointment():
     
     print(f"{BLUE}NEW APPONTMENT BOOKING!\n")
     print("Please select required specialist from the options below:\n")
-    doctor_names=get_consultants()
+    df, doctor_names = get_consultants()
     while True:
         
         try:
-            user_selection = int(input(f"{CYAN}Your selection: {R}\n"))
-            if user_selection in (1, 2, 3, 4, 5):
-                print(f"You selected {doctor_names[user_selection - 1]}")
+            user_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
+            if 1 <= user_selection <= len(doctor_names):
+                selected_doctor = doctor_names[user_selection - 1]
+                
+                print(f"{MAGENTA}You selected {selected_doctor}{R}\n\n")
+                
+                available_months = get_months(df, selected_doctor)
+                print("Please select month from the options below:\n")
+                for i, month in enumerate(available_months, start=1):
+                    print(f"{CYAN}{i}{R} - {month}")
+
                 break
             else:
                 print(f"{RED}Invalid selection!{R}\n")
