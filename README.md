@@ -152,7 +152,7 @@ The booking system is built as a milestone Project#3 for Code Institute Full Sta
 - Under the same `Settings` tab, navigate to `Buildpacks`  
     - Click `Add Buildpack`, select `Python` and select `Save changes`
     - Click `Add Buildpack`, select `nodejs` and select `Save changes`
-- Navigate to `Deploy` section
+- Navigate to `Deploy` tab
     - Navigate to `Deployment method` and select `GitHub` and click `Connect to GitHub`
     - Search for a repository name. For this project the name is `doctor-booking`. Click `Search` and `Connect`
 - Navigate to Automatic deploys and select `Enable Automatic Deploys` 
