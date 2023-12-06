@@ -64,3 +64,89 @@ The booking system is built as a milestone Project#3 for Code Institute Full Sta
 - [Heroku](https://www.heroku.com/) to deploy the app
 - [Python Template](https://github.com/Code-Institute-Org/python-essentials-template) is [Code Institute](https://codeinstitute.net/ie/) template used for this project
 - [GitHub](https://github.com/) repository for code hosting
+
+## Existing Features
+
+### Welcome screen
+
+- This is the first screen when the program is launched.
+- To continue, user needs to select one of available options
+
+### Book an appointment
+- This screen appears when user selects option 1 in the welcome screen.
+- User is prompted to select required specialist by entering number for selection
+- The 
+
+## Testing
+
+- This app was developed using ASUS ROG laptop with Windows 10 OS. 
+- Testing conducted while running in the terminal and after deployment to Heroku
+
+### PEP8 Code Institute Python Linter testng
+
+- TBC
+
+![PEP8 Linter()]
+
+### User Stories Testing
+
+    | User Requirements | Result |
+    | --- | ---|
+    | I want to see clear instructions how to submit a new booking. |  |
+    | I want to see available specialists |  |
+    | I want to see available times |  |
+    | I want to see confirmation one my booking is submitted |  |
+    | As a returning user, I want to see the options to make a new booking |  |
+    | As a returning user, I want to be able to retrieve previously submitted booking and cancel |  |
+    | As an app owner, I want to provide simple navigation instructions |  |
+    | As an app owner, I want the app to be visualy pleasing and not cluttered |  |
+
+### Welcome screen testing
+![]()
+
+| Action | Expected Result | Actual Result | Image |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+
+### Booking page testing
+![]()
+
+| Action | Expected Result | Actual Result | Image |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+
+### Canceling page testing
+![]()
+
+| Action | Expected Result | Actual Result | Image |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+| --- | --- | --- | --- |
+
+## Google Lighhouse testing
+
+
+## Problems solved
+
+## Problems unsoved
+
+## Deployment
+
+### Create list of Requirements
+- In terminal run command `pip3 freeze > requirement.txt` to create a list of requirements to be installed in Heroku
+
+### Deploy with Heroku
+- Navigate to [Heroku](https://dashboard.heroku.com/apps)
+- 
+
+
+# Credits
+ - [Code Institute](https://codeinstitute.net/ie/) for valuable resources and inspiration
+
+
+
