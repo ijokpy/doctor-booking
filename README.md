@@ -25,3 +25,20 @@ The booking system is built as a milestone Project#3 for Code Institute Full Sta
 - As an app owner, I want to provide simple navigation instructions
 - As an app owner, I want the app to be visualy pleasing and not cluttered
 
+
+# Design
+
+## Visual
+
+- 
+
+## Colour
+
+-
+
+## Font
+
+
+## Flowcharts
+
+1[Pulse clinic flow chart](assets/images/flowchart.png)
