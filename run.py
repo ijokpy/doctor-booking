@@ -62,18 +62,39 @@ def get_consultants():
         print(f"{CYAN}{i}{R}  -  {doctor_name}\n")
     return df, doctor_names
 
-def get_months(df, selected_doctor):
+def get_date(df, selected_doctor):
     """
-    Function retrieves available months 
+    Function retrieves available months and days for selected doctor
     """
     df["Date"] = pd.to_datetime(df["Date"])
     filtered_df = df[df[selected_doctor].apply(lambda x: x.strip() != "")]
     unique_months = filtered_df["Date"].dt.month.unique()
     month_code_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+    unique_days = filtered_df["Date"].dt.day.unique()
     month_codes = [month_code_map[month] for month in unique_months]
     
     # Return the month codes
-    return month_codes
+    return month_codes, unique_days
+
+
+
+def get_time(df, selected_doctor):
+    """
+    Function retrieves available time slots for selected doctor  
+    """
+    time_column = pd.to_datetime(df[selected_doctor], format='%H:%M', errors='coerce')
+
+
+    valid_time_slots = time_column[time_column.notna()]
+
+    # Extract unique time slots
+    unique_time_slots = valid_time_slots.dt.time.unique()
+
+    # Format time in HH:MM
+    formatted_time_slots = [time.strftime('%H:%M') for time in unique_time_slots]
+
+    return formatted_time_slots
+
 
 
 def book_appointment():
@@ -86,22 +107,44 @@ def book_appointment():
     Validates entries.
     """
     
-    print(f"{BLUE}NEW APPONTMENT BOOKING!\n")
+    print(f"{BLUE}NEW APPOINTMENT BOOKING!\n")
     print("Please select required specialist from the options below:\n")
     df, doctor_names = get_consultants()
+    
+
     while True:
         
         try:
-            user_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
-            if 1 <= user_selection <= len(doctor_names):
-                selected_doctor = doctor_names[user_selection - 1]
+            doctor_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
+            if 1 <= doctor_selection <= len(doctor_names):
+                selected_doctor = doctor_names[doctor_selection - 1]
+
+                clear_screen()
                 
                 print(f"{MAGENTA}You selected {selected_doctor}{R}\n\n")
+                month_codes, unique_days = get_date(df, selected_doctor)
                 
-                available_months = get_months(df, selected_doctor)
                 print("Please select month from the options below:\n")
-                for i, month in enumerate(available_months, start=1):
-                    print(f"{CYAN}{i}{R} - {month}")
+                for i, month_code in enumerate(month_codes, start=1):
+                    print(f"{CYAN}{i}{R} - {month_code}")
+
+                while True:
+                    try:
+                        user_month_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
+                        if 1 <= user_month_selection <= len(month_codes):
+                            selected_month = month_codes[user_month_selection - 1]
+                            formatted_time_slots = get_time(df, selected_doctor)
+                            break
+                        else:
+                            print(f"{RED}Invalid selection!{R}\n")
+                            print(f"{RED}Please select a valid month number{R}\n")
+                    except ValueError:
+                        print(f"{RED}Invalid selection!{R}\n")
+                        print(f"{RED}Please enter a number{R}\n")
+                break
+
+
+                formatted_time_slots = get_time(df, selected_doctor)
 
                 break
             else:
@@ -111,6 +154,15 @@ def book_appointment():
             menu_options()
             sleep(4)
             print(f"{RED}Invalid selection!{R}\n")
+            print(f"{RED}Please select number 1 or 2{R}\n")
+
+#def cancel_appointment():
+   # """
+   # Function provides instructions how to cancel existing appointment.
+   # Confirms cancelation.
+    #Validates entries.
+   # """
+   # print(f"{BLUE}CANCEL EXISTING BOOKING!\n")
 
 def menu_options():
     """
@@ -130,7 +182,7 @@ def menu_options():
                 book_appointment()
             elif user_selection == 2:
                 clear_screen()
-                cancel_appointment()
+                #cancel_appointment()
             else:
                 clear_screen()
                 menu_options()
