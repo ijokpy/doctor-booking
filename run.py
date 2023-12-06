@@ -11,6 +11,7 @@ from colored import fg, bg, attr
 #importing module to clear screen
 import os
 from time import sleep
+from clear import clear
 
 #pip3 install pandas
 import pandas as pd #to covert the data to DataFrame
