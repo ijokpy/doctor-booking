@@ -54,4 +54,13 @@ The booking system is built as a milestone Project#3 for Code Institute Full Sta
     - [os](https://docs.python.org/3/library/os.html) to interact with os
     - [clear](https://pypi.org/project/clear/) to clear the terminal
     - [time.sleep](https://docs.python.org/3/library/time.html?highlight=sleep#time.sleep) to pause the execution of the programm for a specified number of seconds
-    - [pandas]() to covert the data to DataFrame
+    - [pandas](https://pandas.pydata.org/) to covert the data to DataFrame
+
+## Other tools and programs
+
+- [Google Sheets](https://docs.google.com/spreadsheets/) to store "doctor_booking" sheet
+- [Google Cloud Platform](https://console.cloud.google.com/) to create a project and generate API credentials
+- [Lucidchart](https://www.lucidchart.com/) to create flowchart
+- [Heroku](https://www.heroku.com/) to deploy the app
+- [Python Template](https://github.com/Code-Institute-Org/python-essentials-template) is [Code Institute](https://codeinstitute.net/ie/) template used for this project
+- [GitHub](https://github.com/) repository for code hosting
