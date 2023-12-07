@@ -11,7 +11,7 @@ from colored import fg, bg, attr
 #importing module to clear screen
 import os
 from time import sleep
-from clear import clear
+
 
 #pip3 install pandas
 import pandas as pd #to covert the data to DataFrame
@@ -47,12 +47,11 @@ month_code_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7:
 #Welcome screen banner
 ascii_banner = BLUE + pyfiglet.figlet_format('Pulse Clinic', justify="center") + R
 
-def clear_screen():
+def clear():
     """
-    Function to clear the screen if no 
+    Function to clear the screen
     """
-    os.system('cls') #For Windows
-    os.system('clear') #For Linux
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def get_consultants():
     """
@@ -67,21 +66,30 @@ def get_consultants():
 
 def get_date(df, selected_doctor):
     """
-    Function retrieves available months and days for the selected doctor
+    Function retrieves available years, months, days, and weekdays for the selected doctor
     """
     df["Date"] = pd.to_datetime(df["Date"])
-    filtered_df = df[df[selected_doctor].apply(lambda x: x.strip() != "")]
+    filtered_df = df.iloc[1:, :].loc[:, ['Date', selected_doctor]].copy()
+    filtered_df = filtered_df[filtered_df[selected_doctor].apply(lambda x: x.strip() != "")]
 
     # Exclude "1st Jan" from unique days
-    unique_days = filtered_df["Date"].dt.day.unique()
-    unique_days = [day for day in unique_days if day != 1]
-
-    unique_months_and_days = filtered_df["Date"].dt.to_period("M")
-    unique_months = unique_months_and_days.unique().astype(str).tolist()
-    unique_weekdays = [date.strftime("%a") for date in filtered_df["Date"]]
+    unique_years_months_days_weekdays = filtered_df["Date"].dt.to_period("D")
+    unique_years = unique_years_months_days_weekdays.dt.year.unique().tolist()  # Convert NumPy array to list
+    unique_months = unique_years_months_days_weekdays.dt.month.unique().tolist()
+    unique_days = unique_years_months_days_weekdays.dt.day.unique().tolist()
     
-    # Return the month codes, unique days, and unique weekdays
-    return unique_months, unique_days, unique_weekdays
+    # Convert unique months to short month format
+    month_codes = [month_code_map[month] for month in unique_months]
+
+    return unique_years, month_codes, unique_days
+
+
+
+
+
+
+
+
 
 
 
@@ -126,42 +134,37 @@ def book_appointment():
             doctor_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
             if 1 <= doctor_selection <= len(doctor_names):
                 selected_doctor = doctor_names[doctor_selection - 1]
-
-                clear_screen()
-                
+                clear()
                 print(f"{MAGENTA}You selected {selected_doctor}{R}\n\n")
-                unique_months, month_codes, unique_days, unique_weekdays = get_date(df, selected_doctor)
-                month_codes = [month_code_map[month] for month in unique_months]
+                
 
-                print("Please select month from the options below:\n")
+                unique_years, month_codes, unique_days = get_date(df, selected_doctor)
+                print("Please select a month from the options below:\n")
+                # Change from 'month' to 'month_code' in the loop for printing months
                 for i, month_code in enumerate(month_codes, start=1):
-                    print(f"{CYAN}{i}{R} - {month_code}")
+                    print(f"{CYAN}{i}{R} - {month_code_map[month_code]}")
 
+                # The loop for user input to select a month
                 while True:
                     try:
-                        user_month_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n"))
+                        user_month_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
                         if 1 <= user_month_selection <= len(month_codes):
-                            selected_month = month_codes[user_month_selection - 1]
-                            formatted_time_slots = get_time(df, selected_doctor)
-
+                            selected_month = month_codes[user_month_selection - 1]  # Fix this line
                             # Filter days based on the selected month
                             days_in_selected_month = [day for day in unique_days if pd.to_datetime(f"{selected_month} {day}", format="%b %d").month == user_month_selection]
 
                             print("\nPlease select the day number for the selected month:")
-                            # Print debug information
-                            #print("Unique Days:", unique_days)
-                            print("Selected Month:", selected_month)
-                            #print("Days in Selected Month:", days_in_selected_month)
 
+                            # Loop for printing available days
                             for day in sorted(days_in_selected_month):
                                 print(f"{CYAN}{day:4}{R}", end=" ")
 
+                            # Loop for user input to select a day
                             while True:
                                 try:
-                                    user_day_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n"))
+                                    user_day_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n\n"))
                                     if user_day_selection in days_in_selected_month:
                                         selected_day = user_day_selection
-                                        
                                         break
                                     else:
                                         print(f"{RED}Invalid selection!{R}\n")
@@ -176,12 +179,13 @@ def book_appointment():
                     except ValueError:
                         print(f"{RED}Invalid selection!{R}\n")
                         print(f"{RED}Please enter a number{R}\n")
+
+                break
                
 
 
-                #formatted_time_slots = get_time(df, selected_doctor)
+                formatted_time_slots = get_time(df, selected_doctor)
 
-                break
             else:
                 print(f"{RED}Invalid selection!{R}\n")
                 print(f"{RED}Please select a number{R}\n")
@@ -190,6 +194,7 @@ def book_appointment():
             sleep(4)
             print(f"{RED}Invalid selection!{R}\n")
             print(f"{RED}Please select number 1 or 2{R}\n")
+        
 
     
 
@@ -215,18 +220,18 @@ def menu_options():
         try:
             user_selection = (int(input(f"{CYAN}Your selection: {R}\n")))
             if user_selection == 1:
-                clear_screen()
+                clear()
                 book_appointment()
             elif user_selection == 2:
-                clear_screen()
+                clear()
                 #cancel_appointment()
             else:
-                clear_screen()
+                clear()
                 menu_options()
                 print(f"{RED}Invalid selection!{R}\n")
                 print(f"{RED}Please select number 1 or 2{R}\n")
         except ValueError:
-            clear_screen()
+            clear()
             menu_options()
             sleep(4)
             print(f"{RED}Invalid selection!{R}\n")
