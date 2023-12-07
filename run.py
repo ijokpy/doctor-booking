@@ -40,6 +40,9 @@ CYAN = fg("light_cyan")
 MAGENTA = fg("magenta")
 R = attr("reset")
 
+# Month code mapping
+month_code_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+
 
 #Welcome screen banner
 ascii_banner = BLUE + pyfiglet.figlet_format('Pulse Clinic', justify="center") + R
@@ -64,18 +67,22 @@ def get_consultants():
 
 def get_date(df, selected_doctor):
     """
-    Function retrieves available months and days for selected doctor
+    Function retrieves available months and days for the selected doctor
     """
     df["Date"] = pd.to_datetime(df["Date"])
     filtered_df = df[df[selected_doctor].apply(lambda x: x.strip() != "")]
-    unique_months = filtered_df["Date"].dt.month.unique()
-    month_code_map = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"}
+
+    # Exclude "1st Jan" from unique days
     unique_days = filtered_df["Date"].dt.day.unique()
-    month_codes = [month_code_map[month] for month in unique_months]
+    unique_days = [day for day in unique_days if day != 1]
+
+    unique_months_and_days = filtered_df["Date"].dt.to_period("M")
+    unique_months = unique_months_and_days.unique().astype(str).tolist()
     unique_weekdays = [date.strftime("%a") for date in filtered_df["Date"]]
     
-    # Return the month codes
-    return month_codes, unique_days, unique_weekdays
+    # Return the month codes, unique days, and unique weekdays
+    return unique_months, unique_days, unique_weekdays
+
 
 
 
@@ -123,7 +130,9 @@ def book_appointment():
                 clear_screen()
                 
                 print(f"{MAGENTA}You selected {selected_doctor}{R}\n\n")
-                month_codes, unique_days, unique_weekdays = get_date(df, selected_doctor)
+                unique_months, month_codes, unique_days, unique_weekdays = get_date(df, selected_doctor)
+                month_codes = [month_code_map[month] for month in unique_months]
+
                 print("Please select month from the options below:\n")
                 for i, month_code in enumerate(month_codes, start=1):
                     print(f"{CYAN}{i}{R} - {month_code}")
@@ -134,19 +143,25 @@ def book_appointment():
                         if 1 <= user_month_selection <= len(month_codes):
                             selected_month = month_codes[user_month_selection - 1]
                             formatted_time_slots = get_time(df, selected_doctor)
+
+                            # Filter days based on the selected month
                             days_in_selected_month = [day for day in unique_days if pd.to_datetime(f"{selected_month} {day}", format="%b %d").month == user_month_selection]
+
                             print("\nPlease select the day number for the selected month:")
-                            
-                            
-                            # 
-                            for day in unique_days:
+                            # Print debug information
+                            #print("Unique Days:", unique_days)
+                            print("Selected Month:", selected_month)
+                            #print("Days in Selected Month:", days_in_selected_month)
+
+                            for day in sorted(days_in_selected_month):
                                 print(f"{CYAN}{day:4}{R}", end=" ")
-                                
+
                             while True:
                                 try:
                                     user_day_selection = int(input(f"\n\n{CYAN}Your selection: {R}\n"))
-                                    if user_day_selection in unique_days:
+                                    if user_day_selection in days_in_selected_month:
                                         selected_day = user_day_selection
+                                        
                                         break
                                     else:
                                         print(f"{RED}Invalid selection!{R}\n")
